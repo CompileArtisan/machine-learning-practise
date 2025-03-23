@@ -1,0 +1,198 @@
+#+TITLE: Prediction of Ground Motion using Data on Seismic Waves
+#+SETUPFILE: /home/praaneshnair/.config/doom/ieee.org
+#+LATEX_HEADER: \input{/home/praaneshnair/.config/doom/def.tex}
+#+LATEX_HEADER: \input{/home/praaneshnair/.config/doom/author.tex}
+#+OPTIONS: toc:nil ^:{} author:nil date:nil
+#+BIBLIOGRAPHY: References.bib
+# #+INCLUDE: abstract.org
+#+begin_export latex
+\begin{abstract}
+#+end_export
+This paper presents a methodology for analyzing seismic data from significant
+earthquakes using the ObsPy Python library. We leverage the
+\texttt{obspy.mass\_downloader() } module to efficiently retrieve waveform data
+in miniSEED format and associated station metadata in StationXML format from
+multiple data centers, including IRIS. Our dataset encompasses four major
+seismic events: the 2011 Tohoku earthquake (Japan), the 2010 Chile earthquake,
+the 2016 Kumamoto earthquake (Japan), and the 2015 Nepal earthquake. Downloaded
+miniSEED files are processed to extract relevant features. Specifically, we
+convert the time-domain data into CSV files containing statistical measures such
+as mean, standard deviation, maximum amplitude, peak-to-peak amplitude, root
+mean square, dominant frequency, spectral centroid, energy, and the waveform
+itself, along with station metadata including station ID, channel, start time,
+latitude, longitude, elevation, and distance from the event. Finally, we
+demonstrate the utility of this processed data by applying the Short-Term
+Average/Long-Term Average (STA/LTA) algorithm to the mean-subtracted waveforms
+to automatically identify the arrival of P-Waves and S-Waves. This approach facilitates
+efficient data acquisition, feature extraction, and automated phase picking for
+large seismic datasets, enabling further analysis of earthquake dynamics.
+#+begin_export latex
+\end{abstract}
+#+end_export
+
+
+#+begin_export latex
+\begin{IEEEkeywords}
+#+end_export
+
+Seismic Waves, Instrument Response, Ground Acceleration, Arias Intensity
+
+#+begin_export latex
+\end{IEEEkeywords}
+#+end_export
+
+* Introduction
+# Some text with a citation [cite:@taylorgetting].
+The analysis of seismic data provides crucial insights into earthquake dynamics
+and Earth's subsurface structure. Various seismic waveform data from several
+significant earthquakes were processed and analyzed by investigating the
+relationship between maximum amplitude and distance to the event. This was done
+by extracting features, using matrix operations and similarity measures. We
+focus on four major seismic events: the 2011 Tohoku earthquake (Japan), the 2010
+Chile earthquake, the 2016 Kumamoto earthquake (Japan), and the 2015 Nepal
+earthquake. This approach facilitates access to a large volume of data from
+diverse sources.
+
+* Methodology
+The ObsPy Python library was used for efficient data acquisition and
+manipulation. Using \texttt{obspy.mass\_downloader()}, we retrieved waveform data
+in miniSEED format and corresponding station metadata in StationXML format from
+multiple data centers, including IRIS. The downloaded miniSEED files were processed to extract key
+features for analysis. Time-domain data was converted into CSV files and
+statistical measures such as mean, standard deviation, maximum amplitude,
+peak-to-peak amplitude, root mean square, dominant frequency, spectral centroid
+and energy were added to it. Crucially, station metadata,
+including station ID, channel, start time, latitude, longitude, elevation, and
+distance from the event, were also incorporated into the CSV files. This
+enriched dataset allows for comprehensive analysis, linking waveform
+characteristics with station location and event information.
+
+
+* Literature Survey
+Seismic signal processing and analysis have garnered significant attention in
+recent years, with various machine learning methodologies being employed for
+classification, event detection, and predictive modeling. This section reviews
+key contributions in the field, highlighting different approaches and techniques
+applied to seismic data analysis.
+
+
+Li et al. \cite{b1} investigated seismic data
+classification using supervised machine learning techniques. Their study focused
+on extracting features such as spectral content, amplitude variations, and
+waveform characteristics. They evaluated the performance of multiple machine
+learning models, including Support Vector Machines (SVM), Decision Trees, and
+Neural Networks, which were trained on labeled seismic event datasets to assess
+classification accuracy.
+
+
+Ramirez and Meyer \cite{b2} explored seismic phase
+classification through manifold learning techniques. Their approach involved
+mapping high-dimensional seismic data onto a lower-dimensional manifold using
+Laplacian Eigenmaps, improving classification performance by preserving local
+waveform structures. Their method demonstrated enhanced differentiation between
+P-waves and S-waves using nearest-neighbor-based classifiers in the transformed
+space.
+
+
+Chakraborty et al. \cite{b3} employed statistical feature extraction
+techniques for micro-seismic event detection. The extracted features included
+peak amplitude, energy, zero-crossing rate, and entropy. Machine learning models
+such as Random Forest, SVM, and k-Nearest Neighbors (KNN) were applied to
+classify seismic events, distinguishing natural seismic activity from noise with
+improved accuracy.
+
+
+Shu et al. \cite{b4} conducted a comprehensive survey on
+machine learning applications in microseismic signal recognition and
+classification. They categorized methodologies into three major groups:
+feature-based models utilizing statistical descriptors, deep learning models
+such as Convolutional Neural Networks (CNNs) and Recurrent Neural Networks
+(RNNs), and hybrid techniques that integrate statistical feature extraction with
+deep learning frameworks. Additionally, their survey highlighted key challenges
+and potential advancements in the domain.
+
+
+Varshney et al. \cite{b5} developed a
+machine learning-based earthquake monitoring system leveraging real-time seismic
+data streams. Their approach involved preprocessing seismic data using Fourier
+and Wavelet Transforms before training classification models, such as Decision
+Trees and Neural Networks, to detect and monitor earthquake events dynamically.
+
+
+Chin et al. \cite{b6} enhanced earthquake detection accuracy by implementing a
+hybrid deep learning model integrating CNNs and Long Short-Term Memory (LSTM)
+networks. Their framework, trained on labeled seismic waveform datasets,
+incorporated data augmentation techniques to improve model robustness. The
+proposed system demonstrated superior detection performance compared to
+traditional signal processing methods.
+
+
+Shimshoni and Intrator \cite{b7} applied
+ensemble learning techniques for seismic signal classification. Their work
+utilized bagging and boosting strategies to enhance classification accuracy,
+demonstrating that ensemble-based neural network approaches could improve
+differentiation between seismic events.
+
+
+Agliz and Atmani \cite{b8} employed
+multi-layer perceptron (MLP) neural networks for seismic signal classification.
+Their methodology involved extracting both frequency-domain and time-domain
+features from seismic waveforms, which were subsequently used as input to the
+neural network for classification and training.
+
+
+Akhouayri et al. \cite{b9}
+introduced a fuzzy expert system for automatic seismic signal classification.
+Their method defined fuzzy sets based on key signal parameters such as
+amplitude, frequency content, and duration, allowing for a more flexible and
+interpretable classification framework compared to traditional rule-based
+systems.
+
+
+Curilem et al. \cite{b10} investigated the application of genetic
+algorithms for optimizing neural network classifiers in the context of volcanic
+seismic signal classification. Their findings demonstrated that evolutionary
+computation techniques could enhance the performance of neural network models in
+differentiating between various types of volcanic seismic events.
+
+* Results and Discussion
+The rank of a matrix tells you the number of linearly independent columns
+present in it. In the case of an observation matrix, each column corresponds to
+a feature. Hence the rank is a measure of non-degenerateness.
+
+
+Classification is a type of supervised machine learning which is used to predict
+labels or catagories. As a dataset, you are given with various features, along
+with the labels each data point is associated with. The output of a
+classification model is a class label. You basically use this whenever you want
+to assign an input some predefined category. Between each of the output classes,
+there exists a clear decision boundary. There are many examples and types of
+classification models such as Decision Trees, Random Forest, Support Vector
+Machines and Neural Networks (for classification). The evaluation metrics used
+for classification are Accuracy, Precision, Recall, \(F_{1}\)-score and ROC-AUC.
+
+
+Regression is another type of supervised machine learning which is used to
+predict continuous values. There are many examples and types for regression
+models such as Linear Regression, Polynomial Regression, Decision Trees, Neural
+Networks (for regression). Regression don't have any strict decision boundary.
+It tries to fit a line or a curve in the dataset, which illustrates the
+predicted output for each input. The evaluation metrics used for regression are \(R^{2}\) score, Mean Absolute Error (MAE), Mean Squared Error (MSE).
+
+
+#+begin_export latex
+\begin{thebibliography}{00}
+#+end_export
+\bibitem{b1} W. Li, N. Narvekar, N. Nakshatra, N. Raut, B. Sirkeci and J. Gao, ``Seismic Data Classification Using Machine Learning,'' \textit{2018 IEEE Fourth International Conference on Big Data Computing Service and Applications (BigDataService)}, Bamberg, Germany, 2018, pp. 56-63
+\bibitem{b2} J. Ramirez Jr and F. G. Meyer, ``Machine Learning for Seismic Signal Processing: Phase Classification on a Manifold,'' \textit{2011 10th International Conference on Machine Learning and Applications and Workshops}, Honolulu, HI, USA, 2011, pp. 382-388
+\bibitem{b3} M. Chakraborty, M. Das and S. Aruchamy, ``Micro-Seismic Event Detection using statistical feature extraction and machine learning techniques,'' 2\textit{022 IEEE 7th International conference for Convergence in Technology (I2CT)}, Mumbai, India, 2022, pp. 1-5
+\bibitem{b4} H. Shu, A. Y. Dawod, L. Mu and W. Tepsan, ``A Survey of Machine Learning Applications in Microseismic Signal Recognition and Classification,'' \textit{2023 15th International Conference on Software, Knowledge, Information Management and Applications (SKIMA)}, Kuala Lumpur, Malaysia, 2023, pp. 18-23
+\bibitem{b5} N. Varshney, G. Kumar, A. Kumar, S. K. Pandey, T. Singh and K. U. Singh, ``Machine Learning Based Algorithm for Earthquake Monitoring,'' \textit{2023 IEEE 12th International Conference on Communication Systems and Network Technologies (CSNT)}, Bhopal, India, 2023, pp. 264-270
+\bibitem{b6} T. -L. Chin, C. -Y. Huang, S. -H. Shen, Y. -C. Tsai, Y. H. Hu and Y. -M. Wu, ``Learn to Detect: Improving the Accuracy of Earthquake Detection,'' in \textit{IEEE Transactions on Geoscience and Remote Sensing}, vol. 57, no. 11, pp. 8867-8878, Nov. 2019
+\bibitem{b7}Y. Shimshoni and N. Intrator, ``Classification of seismic signals by integrating ensembles of neural networks,'' in \textit{IEEE Transactions on Signal Processing}, vol. 46, no. 5, pp. 1194-1201, May 1998
+\bibitem{b8}Agliz, Driss, and Abderrahman Atmani. ``Seismic signal classification using multi-layer perceptron neural network.'' \textit{International Journal of Computer Applications} 79, no. 15 (2013).
+\bibitem{b9}Akhouayri, Es-Saïd, Dris Agliz, Daniele Zonta, and Abderrahman Atmani. ``A fuzzy expert system for automatic seismic signal classification.'' \textit{Expert Systems with Applications} 42, no. 3 (2015): 1013-1027.
+\bibitem{b10}Curilem, Gloria, Jorge Vergara, Gustavo Fuentealba, Gonzalo Acuña, and Max Chacón. ``Classification of seismic signals at Villarrica volcano (Chile) using neural networks and genetic algorithms.'' \textit{Journal of volcanology and geothermal research} 180, no. 1 (2009): 1-8.
+#+begin_export latex
+\end{thebibliography}
+#+end_export
